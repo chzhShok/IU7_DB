@@ -12,6 +12,12 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    command: >
+      bash -c "
+        apt-get update &&
+        apt-get install -y postgresql-plpython3-18 &&
+        docker-entrypoint.sh postgres
+      "
 
 volumes:
   postgres_data:
