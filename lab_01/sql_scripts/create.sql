@@ -1,4 +1,4 @@
-drop schema cinema cascade;
+drop schema if exists cinema cascade;
 create schema cinema;
 
 SET search_path TO cinema;
