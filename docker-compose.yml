@@ -12,6 +12,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - /Users/evailcenko/baumanka/db/labs/IU7_DB/lab_05/json:/tmp
     command: >
       bash -c "
         apt-get update &&
