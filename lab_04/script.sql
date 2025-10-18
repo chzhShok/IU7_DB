@@ -8,10 +8,10 @@ as $$
 import re
 
 if not password:
-    return false
+    return False
 
 if len(password) < 8:
-    return false
+    return False
 
 checks = [
     r'\d',
@@ -22,9 +22,9 @@ checks = [
 
 for pattern in checks:
     if not re.search(pattern, password):
-        return false
+        return False
 
-return true
+return True
 $$ language plpython3u;
 
 select check_password_strength('strongpass123!');
@@ -35,8 +35,8 @@ select check_password_strength('1239aa!');
 create or replace function filtered_avg_rating_accum(state numeric[], rating numeric)
 returns numeric[]
 as $$
-if rating is not none:
-    if state[0] is none:
+if rating is not None:
+    if state[0] is None:
         return [1, rating]
     else:
         return [state[0] + 1, state[1] + rating]
@@ -46,8 +46,8 @@ $$ language plpython3u;
 create or replace function filtered_avg_rating_final(state numeric[])
 returns numeric
 as $$
-if state is none or state[0] is none or state[0] == 0:
-    return none
+if state is None or state[0] is None or state[0] == 0:
+    return None
 return state[1] / state[0]
 $$ language plpython3u;
 
@@ -128,15 +128,21 @@ select * from upgrade_user_subscription(1, 'basic');
 
 -- определяемый пользователем тип данных
 -- дата и длительность просмотра
-create or replace type viewing_time as (
+create type viewing_time as (
     viewing_date date,
     viewing_duration interval
 );
 
+create or replace function create_viewing_time(viewing_date date, viewing_duration interval)
+returns viewing_time
+as $$
+return (viewing_date, viewing_duration)
+$$ language plpython3u;
+
 create or replace function viewing_time_to_string(vt viewing_time)
 returns text
 as $$
-if vt is none:
+if vt is None:
     return "null"
 
 date_part = vt.get('viewing_date')
@@ -153,8 +159,8 @@ select viewing_time_to_string(('2024-01-15'::date, '2 hours 30 minutes'::interva
 create or replace function update_device_login_trigger()
 returns trigger
 as $$
-if td["new"] and td["new"]["device_id"]:
-    device_id = td["new"]["device_id"]
+if TD["new"] and TD["new"]["device_id"]:
+    device_id = TD["new"]["device_id"]
     
     update_query = """
     update cinema.devices 
@@ -165,7 +171,7 @@ if td["new"] and td["new"]["device_id"]:
     plan = plpy.prepare(update_query, ["integer"])
     plpy.execute(plan, [device_id])
 
-return none
+return None
 $$ language plpython3u;
 
 create or replace trigger update_device_login_trigger
