@@ -83,7 +83,7 @@ def main():
             break
 
         else:
-            print("Wring choice")
+            print("Wrong choice")
 
 
 if __name__ == "__main__":
