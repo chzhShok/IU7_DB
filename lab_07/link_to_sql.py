@@ -1,5 +1,4 @@
 from sqlalchemy import text, func
-from datetime import datetime, date
 from datetime import date, timedelta
 
 from models import Users, ViewingHistory, Movies, Devices
