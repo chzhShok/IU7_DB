@@ -50,6 +50,7 @@ def menu():
                 "\t7. Чтение из JSON документа\n" \
                 "\t8. Обновление JSON документа\n" \
                 "\t9. Добавление в JSON документ\n" \
+                "\t16. Топ фильмов для телефона\n" \
                 "--------- LINQ_to_SQL ----------------- \n" \
                 "\t10. Активные устройства с недавней активностью\n" \
                 "\t11. История просмотров (просмотрено >70%)\n" \
@@ -268,7 +269,6 @@ def main():
             except ValueError:
                 print("  Ошибка: введите корректный ID")
 
-
         elif choice == "15":
             print("\n=== Средние рейтинги режиссеров ===")
             director_ratings = linq_sql.execute_stored_procedure()
@@ -278,6 +278,18 @@ def main():
                 print(df)
             else:
                 print("Данные не найдены или произошла ошибка")
+
+        elif choice == "16":
+            print("\n=== Топ фильмов для просмотра на телефоне ===")
+
+            limit = input("  Введите количество фильмов для вывода (по умолчанию 10): ").strip()
+            limit = int(limit) if limit else 10
+
+            top_phone_movies = linq_json.get_top_phone_movies(limit)
+
+            print(f"\n=== Топ-{len(top_phone_movies)} фильмов для телефона ===")
+            df = to_pandas_df(top_phone_movies)
+            print(df)
 
         elif choice == "0":
             print("Выход из программы")
