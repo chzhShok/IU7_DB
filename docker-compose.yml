@@ -1,22 +1,4 @@
-volumes:
-  postgres:
-  postgres_data:
-
 services:
-  postgres:
-    container_name: nifi_postgres_container
-    image: postgres
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: postgres
-      PGDATA: /data/postgres
-    volumes:
-        - postgres:/var/lib/postgresql/data
-    ports:
-        - "5433:5432"
-    networks:
-        - my_persistent_network
-
   postgres_streaming_service:
     image: postgres
     container_name: postgres_university
@@ -37,6 +19,19 @@ services:
       "
     networks:
         - my_persistent_network
+
+  redis:
+    image: redis:8.4
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - my_persistent_network
+    depends_on:
+      - postgres_streaming_service
 
   # configuration manager for NiFi
   zookeeper:
@@ -115,12 +110,16 @@ services:
         GF_SERVER_ROOT_URL: http://localhost:3000/grafana/
         GF_SERVER_SERVE_FROM_SUB_PATH: "true"
       volumes:
-        - postgres:/var/lib/grafana:rw
+        - postgres_data:/var/lib/grafana:rw
       depends_on:
-        - postgres
+        - postgres_streaming_service
       networks:
         - my_persistent_network
 
 networks:
   my_persistent_network:
     driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
