@@ -1,6 +1,6 @@
 services:
   postgres_streaming_service:
-    image: postgres
+    image: postgres:17
     container_name: postgres_university
     environment:
       POSTGRES_USER: postgres
@@ -48,7 +48,7 @@ services:
   registry:
       hostname: myregistry
       container_name: registry_container_persistent
-      image: 'apache/nifi-registry:latest'
+      image: 'apache/nifi-registry:2.6.0'
       restart: on-failure
       ports:
           - "18080:18080"
@@ -67,7 +67,7 @@ services:
   nifi:
       hostname: mynifi
       container_name: nifi_container_persistent
-      image: 'apache/nifi:latest'
+      image: 'apache/nifi:2.6.0'
       restart: on-failure
       ports:
           - '8091:8443'
@@ -99,7 +99,7 @@ services:
 
   # bi grafana
   grafana:
-      image: grafana/grafana:latest
+      image: grafana/grafana:12.1
       container_name: grafana_container
       restart: always
       ports:
@@ -109,8 +109,9 @@ services:
         GF_SECURITY_ADMIN_PASSWORD: password
         GF_SERVER_ROOT_URL: http://localhost:3000/grafana/
         GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+      user: "472:472"
       volumes:
-        - postgres_data:/var/lib/grafana:rw
+        - grafana_data:/var/lib/grafana
       depends_on:
         - postgres_streaming_service
       networks:
@@ -123,3 +124,4 @@ networks:
 volumes:
   postgres_data:
   redis_data:
+  grafana_data:
